@@ -1,0 +1,31 @@
+.root {
+    -fx-background-color: #E0F7FA; /* 밝은 하늘색 배경 */
+}
+
+.text-area {
+    -fx-background-color: rgba(255, 255, 255, 0.9);
+    -fx-border-color: #004D40; /* 어두운 녹색 테두리 */
+    -fx-border-width: 2;
+    -fx-padding: 10;
+    -fx-font-size: 14px;
+}
+
+.text-field {
+    -fx-background-color: #FFFFFF; /* 흰색 배경 */
+    -fx-border-color: #00796B; /* 청록색 테두리 */
+    -fx-border-width: 2;
+    -fx-background-radius: 15; /* 모서리 둥글게 */
+}
+
+.button {
+    -fx-background-color: #009688; /* 청록색 버튼 */
+    -fx-text-fill: white; /* 흰색 텍스트 */
+    -fx-font-size: 16px;
+    -fx-background-radius: 15; /* 모서리 둥글게 */
+    -fx-padding: 10; /* 버튼 안쪽 여백 */
+}
+
+/* 버튼 호버 효과 */
+.button:hover {
+    -fx-background-color: #00796B; /* 버튼 호버 시 색상 */
+}

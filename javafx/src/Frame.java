@@ -41,13 +41,13 @@ public class Frame extends Application {
 
         // 첫 번째 화면: Start 버튼 화면 설정
         BorderPane startScreen = new BorderPane();
-        ImageView backgroundImage = new ImageView(new Image("file:images/MyNatureLogo.jpeg"));
+        ImageView backgroundImage = new ImageView(new Image("file:javafx/images/MyNatureLogo.jpeg"));
         backgroundImage.setFitWidth(520);
         backgroundImage.setFitHeight(620);
         startScreen.getChildren().add(backgroundImage);
 
         Button startButton = new Button();
-        startButton.setGraphic(new ImageView(new Image("file:images/start.jpg")));
+        startButton.setGraphic(new ImageView(new Image("file:javafx/images/start.jpg")));
         startButton.setStyle("-fx-background-color: transparent;");
         startButton.setOnAction(e -> primaryStage.setScene(createStoryScene(primaryStage)));
 
@@ -61,12 +61,12 @@ public class Frame extends Application {
 
     private Scene createStoryScene(Stage primaryStage) {
         BorderPane storyScreen = new BorderPane();
-        ImageView backgroundImage = new ImageView(new Image("file:images/storybackground.jpeg"));
+        ImageView backgroundImage = new ImageView(new Image("file:javafx/images/storybackground.jpeg"));
         backgroundImage.setFitWidth(520);
         backgroundImage.setFitHeight(620);
 
         storyText = new TextArea();
-        storyText.setFont(loadCustomFont("src/font.ttf", 18));
+        storyText.setFont(loadCustomFont("javafx/src/font.ttf", 18));
         storyText.setEditable(false);
         storyText.setWrapText(true);
         storyText.setStyle("-fx-control-inner-background: transparent;");
@@ -93,12 +93,12 @@ public class Frame extends Application {
 
     private Scene createMBTIScene(Stage primaryStage) {
         BorderPane MBTIScreen = new BorderPane();
-        ImageView backgroundImage = new ImageView(new Image("file:images/storybackground.jpeg"));
+        ImageView backgroundImage = new ImageView(new Image("file:javafx/images/storybackground.jpeg"));
         backgroundImage.setFitWidth(520);
         backgroundImage.setFitHeight(620);
 
         TextArea MBTIText = new TextArea();
-        MBTIText.setFont(loadCustomFont("src/font.ttf", 20));
+        MBTIText.setFont(loadCustomFont("javafx/src/font.ttf", 20));
         MBTIText.setEditable(false);
         MBTIText.setWrapText(true);
         MBTIText.setText(MBTILines[currentMBTIIndex]);
@@ -133,30 +133,30 @@ public class Frame extends Application {
 
     private Scene createMiniGameScene(Stage primaryStage) {
         BorderPane nextScreen = new BorderPane();
-        ImageView backgroundImage = new ImageView(new Image("file:images/storybackground.jpeg"));
+        ImageView backgroundImage = new ImageView(new Image("file:javafx/images/storybackground.jpeg"));
         backgroundImage.setFitWidth(520);
         backgroundImage.setFitHeight(620);
 
         Button gamingButton = new Button("첫 번째 게임");
-        gamingButton.setFont(loadCustomFont("src/font.ttf", 20));
+        gamingButton.setFont(loadCustomFont("javafx/src/font.ttf", 20));
         gamingButton.setOnAction(e -> new Gaming());
 
         Button cardButton = new Button("두 번째 게임");
-        cardButton.setFont(loadCustomFont("src/font.ttf", 20));
+        cardButton.setFont(loadCustomFont("javafx/src/font.ttf", 20));
         cardButton.setOnAction(e -> {
             Stage cardStage = new Stage(); // 새로운 Stage 생성
             new card().start(cardStage); // 카드 게임 실행
         });
 
         Button kysButton = new Button("세 번째 게임");
-        kysButton.setFont(loadCustomFont("src/font.ttf", 20));
+        kysButton.setFont(loadCustomFont("javafx/src/font.ttf", 20));
         kysButton.setOnAction(e -> {
             Stage myNatureStage = new Stage(); // 새로운 Stage 생성
             new MyNatureGame().start(myNatureStage); // MyNatureGame 실행
         });
 
         Button mywButton = new Button("네 번째 게임");
-        mywButton.setFont(loadCustomFont("src/font.ttf", 20));
+        mywButton.setFont(loadCustomFont("javafx/src/font.ttf", 20));
         mywButton.setOnAction(e -> {
             Stage breakoutStage = new Stage(); // 새로운 Stage 생성
             new BreakoutGame().start(breakoutStage); // BreakoutGame 실행

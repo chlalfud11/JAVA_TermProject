@@ -1,307 +1,187 @@
 package minigame_cmr;
-/*게임이 실행이 되고 9*9 블럭 화면이 보이고 블럭이 서로 변경이 되는 기능 */
-import java.awt.*;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.awt.event.*;
-import javax.swing.*;
-import java.util.List;
-import java.util.Timer;
 
-public class Gaming extends JFrame {
-	
-	Container c;
-	JPanel cardPanel;
-	
-	static public JButton[][] btn = new JButton[9][9];
-	
-	int count = 0;
-	int skill_count = 0;
-	
-	JButton[] btn_click = new JButton[2];
-	ImageIcon first_img;
-	ImageIcon second_img;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
-	static public ImageIcon spe;
-	static public ImageIcon red;
-	static public ImageIcon blue;
-	static public ImageIcon green;
-	static public ImageIcon yellow;
-	static public ImageIcon x;
-	
-	static JLabel countDown = new JLabel("60");
-	JLabel ti = new JLabel("남은 시간 : ");
-	static JLabel score = new JLabel("0");
-	int score1 = 0;
-	static int total=0;
-	JLabel sc = new JLabel("점수 : ");
-	JLabel name = new JLabel("ID  : ");
-	int cnt = 60;
-	
-	String usr_name=FruitCrush.user_name.getText();
-	public Gaming(int x) {
-		
-	}
-	public Gaming() {
-		setTitle("gaming");
-		
-		spe = new ImageIcon("javafx/images/cmr/special.png");
-		x = new ImageIcon("javafx/images/cmr/x.png");
-		red = new ImageIcon("javafx/images/cmr/red.png");
-		blue = new ImageIcon("javafx/images/cmr/blue.png");
-		green = new ImageIcon("javafx/images/cmr/green.png");
-		yellow = new ImageIcon("javafx/images/cmr/yellow.png");
+import java.util.Random;
 
-		c = getContentPane();
+public class Gaming extends Application {
 
-		cardPanel = new JPanel();
-		cardPanel.setLayout(null);
+    private static final int GRID_SIZE = 8; // 그리드 크기
+    private static final int TILE_SIZE = 50; // 블록 크기
+    private Button[][] grid = new Button[GRID_SIZE][GRID_SIZE];
+    private Image[] images; // 블록 이미지
+    private Text scoreText = new Text("Score: 0");
+    private int score = 0;
 
-		for (int i = 0; i < btn.length; i++) {
-			for (int j = 0; j < btn[i].length; j++) { // 판 셋팅
-				int a = (int) (Math.random() * 4);
-				if (a == 0) {
-					btn[i][j] = new JButton(red);
+    private Button firstClicked = null; // 첫 번째 클릭 저장
+    private Button secondClicked = null; // 두 번째 클릭 저장
 
-				} else if (a == 1) {
-					btn[i][j] = new JButton(blue);
+    @Override
+    public void start(Stage primaryStage) {
+        Pane root = new Pane();
+        GridPane gridPane = new GridPane();
+        gridPane.setLayoutX(50);
+        gridPane.setLayoutY(50);
 
-				} else if (a == 2) {
-					btn[i][j] = new JButton(green);
+        // 이미지 초기화
+        images = new Image[]{
+                new Image("file:javafx/images/cmr/red.png"),
+                new Image("file:javafx/images/cmr/blue.png"),
+                new Image("file:javafx/images/cmr/green.png"),
+                new Image("file:javafx/images/cmr/yellow.png"),
+                new Image("file:javafx/images/cmr/purple.png")
+        };
 
-				} else if (a == 3) {
-					btn[i][j] = new JButton(yellow);
+        // 그리드 초기화
+        initializeGrid(gridPane);
 
-				}
+        // 점수 표시
+        scoreText.setLayoutX(50);
+        scoreText.setLayoutY(30);
+        root.getChildren().addAll(gridPane, scoreText);
 
-				btn[i][j].setSize(30, 28);
-				btn[i][j].setLocation(j * 35, i * 32);
+        Scene scene = new Scene(root, 500, 500);
+        primaryStage.setTitle("Anipang Game");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
 
-				cardPanel.add(btn[i][j]);
+    private void initializeGrid(GridPane gridPane) {
+        Random random = new Random();
 
-				btn[i][j].addActionListener(new MyActionListener());
-			}
-		}
-		
-		playSetting(); // 재귀함수 이용해서 블럭 색상 3개 이상을 계속 수정
-		countDown(); // 60초 카운트다운 
-		
-		sc.setSize(100,40);
-		sc.setLocation(330,60);
-		score.setSize(40,40);
-		score.setLocation(400,60);
-		
-		ti.setSize(100,40);
-		ti.setLocation(330,20);
-		countDown.setSize(40,40);
-		countDown.setLocation(400,20);
-		
-		name.setSize(100,40);
-		name.setLocation(330,100);
-		FruitCrush.user_name.setSize(40,40);
-		FruitCrush.user_name.setLocation(400,100);
-		
-		cardPanel.add(sc);
-		cardPanel.add(score);
-		cardPanel.add(ti);
-		cardPanel.add(countDown);
-		cardPanel.add(name);
-		cardPanel.add(FruitCrush.user_name);
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
+                int randomIndex = random.nextInt(images.length);
+                Button button = new Button();
+                button.setGraphic(new ImageView(images[randomIndex]));
+                button.setMinSize(TILE_SIZE, TILE_SIZE);
+                button.setMaxSize(TILE_SIZE, TILE_SIZE);
 
-		
-		c.add(cardPanel); // 게임화면
+                int currentI = i; // i와 j를 람다식에서 사용하기 위해 복사
+                int currentJ = j;
 
-		setSize(500, 400);
-		setVisible(true);
+                button.setOnAction(e -> handleTileClick(currentI, currentJ));
 
-	}
+                grid[i][j] = button;
+                gridPane.add(button, j, i);
+            }
+        }
+    }
 
-	public void countDown() {
+    private void handleTileClick(int i, int j) {
+        Button clickedButton = grid[i][j];
 
-		Timer timer = new Timer();
-		TimerTask task = new TimerTask() {
+        if (firstClicked == null) {
+            // 첫 번째 클릭
+            firstClicked = clickedButton;
+        } else {
+            // 두 번째 클릭
+            secondClicked = clickedButton;
 
-			@Override
-			public void run() {
-				if (cnt >= 0) {
-					String a = Integer.toString(cnt);
-					countDown.setText(a);
-					if (cnt == 0) {
-						FruitCrush.user_result.put(usr_name, Integer.parseInt(Gaming.score.getText())); // 유저 이름과 기록 저장 
-						Set<String> keys = FruitCrush.user_result.keySet();
-						Iterator<String> it = keys.iterator();
-						FruitCrush.ta.setText("");
-						List<String> listKeySet = new ArrayList<>(FruitCrush.user_result.keySet());
+            // 위치 교환 로직
+            if (swapTiles(firstClicked, secondClicked)) {
+                updateScore(100); // 블록 교환 성공 시 점수 추가
+                checkMatches(); // 매칭 확인 및 처리
+            }
 
-						Collections.sort(listKeySet, (value1, value2) -> (FruitCrush.user_result.get(value2).compareTo(FruitCrush.user_result.get(value1))));
-						
-						int rank=1;
-						for(String key : listKeySet) {
-							FruitCrush.ta.append(rank+++"등 >>"+key +"님의 점수 : " + FruitCrush.user_result.get(key) +"\n");
-						}
-						score1 = 0;
-						score.setText("0");
-					}
-					cnt--;
-				} else {
-					timer.cancel();
-					dispose(); // 현재창만 제거 
-				}
+            // 클릭 초기화
+            firstClicked = null;
+            secondClicked = null;
+        }
+    }
 
-			}
+    private boolean swapTiles(Button btn1, Button btn2) {
+        // 두 블록이 인접한지 확인
+        int row1 = GridPane.getRowIndex(btn1);
+        int col1 = GridPane.getColumnIndex(btn1);
+        int row2 = GridPane.getRowIndex(btn2);
+        int col2 = GridPane.getColumnIndex(btn2);
 
-		};
-		timer.schedule(task, 1000, 1000);
+        if (Math.abs(row1 - row2) + Math.abs(col1 - col2) == 1) {
+            // 두 블록의 그래픽 교환
+            ImageView graphic1 = (ImageView) btn1.getGraphic();
+            ImageView graphic2 = (ImageView) btn2.getGraphic();
 
-	}
+            btn1.setGraphic(graphic2);
+            btn2.setGraphic(graphic1);
 
-	public int playSetting() {
-		int cnt = 0; // 3개인게 있는지 확인 변수
-		for (int i = 0; i < btn.length; i++) { // x축 검사
-			for (int j = 0; j < btn[i].length; j++) {
+            return true; // 교환 성공
+        } else {
+            System.out.println("Tiles are not adjacent!");
+            return false; // 교환 실패
+        }
+    }
 
-				if (j > 1 && btn[i][j].getIcon().equals(btn[i][j - 1].getIcon())) {
-					if (btn[i][j - 1].getIcon().equals(btn[i][j - 2].getIcon())) {
-						if (btn[i][j].getIcon().equals(red)) {
-							cnt++;
-							int random = (int) (Math.random() * 2);
-							if (random == 1)
-								btn[i][j].setIcon(blue);
-							else
-								btn[i][j].setIcon(yellow);
+    private void checkMatches() {
+        boolean[][] matched = new boolean[GRID_SIZE][GRID_SIZE]; // 매칭된 블록 기록
+        boolean foundMatch = false;
 
-						} else if (btn[i][j].getIcon().equals(green)) {
-							cnt++;
-							int random = (int) (Math.random() * 2);
-							if (random == 1)
-								btn[i][j].setIcon(blue);
-							else
-								btn[i][j].setIcon(yellow);
+        // 가로 매칭 확인
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE - 2; j++) {
+                ImageView first = (ImageView) grid[i][j].getGraphic();
+                ImageView second = (ImageView) grid[i][j + 1].getGraphic();
+                ImageView third = (ImageView) grid[i][j + 2].getGraphic();
 
-						} else if (btn[i][j].getIcon().equals(blue)) {
-							cnt++;
-							int random = (int) (Math.random() * 2);
-							if (random == 1)
-								btn[i][j].setIcon(red);
-							else
-								btn[i][j].setIcon(green);
+                if (first.getImage().equals(second.getImage()) && second.getImage().equals(third.getImage())) {
+                    matched[i][j] = true;
+                    matched[i][j + 1] = true;
+                    matched[i][j + 2] = true;
+                    foundMatch = true;
+                }
+            }
+        }
 
-						} else if (btn[i][j].getIcon().equals(yellow)) {
-							cnt++;
-							int random = (int) (Math.random() * 2);
-							if (random == 1)
-								btn[i][j].setIcon(red);
-							else
-								btn[i][j].setIcon(green);
+        // 세로 매칭 확인
+        for (int j = 0; j < GRID_SIZE; j++) {
+            for (int i = 0; i < GRID_SIZE - 2; i++) {
+                ImageView first = (ImageView) grid[i][j].getGraphic();
+                ImageView second = (ImageView) grid[i + 1][j].getGraphic();
+                ImageView third = (ImageView) grid[i + 2][j].getGraphic();
 
-						}
-					}
-				}
-			}
-		}
-		for (int i = 0; i < btn.length; i++) { // y축 검사
-			for (int j = 0; j < btn[i].length; j++) {
-				if (j > 1 && btn[j][i].getIcon().equals(btn[j - 1][i].getIcon())) {
-					if (btn[j - 1][i].getIcon().equals(btn[j - 2][i].getIcon())) {
-						if (btn[j][i].getIcon().equals(red)) {
-							cnt++;
-							int random = (int) (Math.random() * 2);
-							if (random == 1)
-								btn[j][i].setIcon(blue);
-							else
-								btn[j][i].setIcon(yellow);
-							;
+                if (first.getImage().equals(second.getImage()) && second.getImage().equals(third.getImage())) {
+                    matched[i][j] = true;
+                    matched[i + 1][j] = true;
+                    matched[i + 2][j] = true;
+                    foundMatch = true;
+                }
+            }
+        }
 
-						} else if (btn[j][i].getIcon().equals(green)) {
-							cnt++;
-							int random = (int) (Math.random() * 2);
-							if (random == 1)
-								btn[j][i].setIcon(blue);
-							else
-								btn[j][i].setIcon(yellow);
+        if (foundMatch) {
+            removeAndGenerateTiles(matched); // 매칭된 블록 제거 및 새로운 블록 생성
+        }
+    }
 
-						} else if (btn[j][i].getIcon().equals(blue)) {
-							cnt++;
-							int random = (int) (Math.random() * 2);
-							if (random == 1)
-								btn[j][i].setIcon(red);
-							else
-								btn[j][i].setIcon(green);
+    private void removeAndGenerateTiles(boolean[][] matched) {
+        Random random = new Random();
 
-						} else if (btn[j][i].getIcon().equals(yellow)) {
-							cnt++;
-							int random = (int) (Math.random() * 2);
-							if (random == 1)
-								btn[j][i].setIcon(red);
-							else
-								btn[j][i].setIcon(green);
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
+                if (matched[i][j]) {
+                    // 매칭된 블록을 제거하고 새 블록 생성
+                    int randomIndex = random.nextInt(images.length);
+                    grid[i][j].setGraphic(new ImageView(images[randomIndex]));
+                    updateScore(50); // 매칭된 블록당 점수 추가
+                }
+            }
+        }
+    }
 
-						}
-					}
-				}
-			}
-		}
-		System.out.println("cnt : " + cnt);
-		if (cnt != 0) {
-			playSetting(); // 3개 이상인게 없을때 까지 재귀 함수 호출로 판을 셋팅
-			System.out.println("재귀호출 ");
-		}
-		return cnt;
+    private void updateScore(int points) {
+        score += points;
+        scoreText.setText("Score: " + score);
+    }
 
-	}
-
-	class MyActionListener implements ActionListener { // 블럭 변경
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			btn_click[count] = (JButton) e.getSource();
-			int nee =0;
-			Skill sz = new Skill();
-			if (count == 0) { // 블럭 변경시 첫번째 클릭 블럭
-				first_img = (ImageIcon) btn_click[0].getIcon();
-				System.out.println("아이콘은 >> " + btn_click[0].getIcon());
-				for (int i = 0; i < btn.length; i++) {
-					for (int j = 0; j < btn[i].length; j++) {
-						if (btn[i][j] == btn_click[0]) {
-							nee = i;
-							System.out.println("btn[" + i + "][" + j + "]" + " 입니다.");
-						}
-					
-					}
-				}
-				if(btn_click[0].getIcon().equals(spe) && skill_count==0) {
-					sz.specialBlock_skill(nee);
-					count=0;
-					skill_count++;
-				}
-				count++;
-			} else { // 블럭 변경시 두번째 클릭 블럭
-				second_img = (ImageIcon) btn_click[1].getIcon();
-				int resultX = btn_click[1].getX() - btn_click[0].getX();
-				int resultY = btn_click[1].getY() - btn_click[0].getY();
-
-				if (Math.abs(resultX) >= 35 && Math.abs(resultY) >= 32) { // 두칸이상 클릭시 무효
-					count = 0;
-				} else if (Math.abs(resultX) == 35) {
-					second_img = (ImageIcon) btn_click[1].getIcon();
-					btn_click[1].setIcon(first_img); // 두번째 클릭된거의 색상을 첫번째 클릭 색상으로 변경 (교환)
-					btn_click[0].setIcon(second_img);
-					count = 0;
-				} else if (Math.abs(resultY) == 32) {
-					second_img = (ImageIcon) btn_click[1].getIcon();
-					btn_click[1].setIcon(first_img);
-					btn_click[0].setIcon(second_img);
-					count = 0;
-				} else { // 두칸이상 클릭시 무효
-					count = 0;
-				}
-				BlockCheck a = new BlockCheck();
-				a.blockCheckX(); // 블럭 체크
-				a.blockCheckY();
-
-			}
-		}
-
-	}
-
-
+    public static void main(String[] args) {
+        launch(args);
+    }
 }

@@ -1,7 +1,6 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import javafx.geometry.Pos;
@@ -9,6 +8,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+
 import java.io.File;
 
 import minigame_cmr.Gaming;
@@ -24,7 +27,7 @@ public class Frame extends Application {
     };
     private int currentLineIndex = 0;
     private TextArea storyText;
-    
+
     private String[] MBTILines = {
             "너는 성장하는 데에 있어 혼자만의 시간이 중요하다고 생각해? 아니면 다른 사람들과 함께하는 것이 중요하다고 생각하니?",
             "너는 갈등 상황에서 차분하게 이 상황을 분석하려고 해? 아니면 상대방의 감정을 먼저 생각하려고 하니?"
@@ -66,13 +69,21 @@ public class Frame extends Application {
         backgroundImage.setFitHeight(620);
 
         storyText = new TextArea();
-        storyText.setFont(loadCustomFont("javafx/src/font.ttf", 18));
+        storyText.setFont(loadCustomFont("/font.ttf", 18));
         storyText.setEditable(false);
         storyText.setWrapText(true);
-        storyText.setStyle("-fx-control-inner-background: transparent;");
-        storyText.setText(storyLines[currentLineIndex++]);
+
+        // 텍스트 상자 스타일 개선
+        storyText.setStyle("-fx-control-inner-background: rgba(240, 248, 255, 0.9); " +
+                           "-fx-border-color: #5f9ea0; " +
+                           "-fx-border-radius: 10; " +
+                           "-fx-padding: 10; " +
+                           "-fx-text-fill: #333333;");
+
+        applyTypewriterEffect(storyText, storyLines[currentLineIndex++]);
 
         Button nextButton = new Button("NEXT");
+        nextButton.setFont(loadCustomFont("/font.ttf", 16));
         nextButton.setOnAction(e -> showNextStoryLine(primaryStage));
 
         VBox content = new VBox(20, storyText, nextButton);
@@ -85,7 +96,7 @@ public class Frame extends Application {
 
     private void showNextStoryLine(Stage primaryStage) {
         if (currentLineIndex < storyLines.length) {
-            storyText.setText(storyLines[currentLineIndex++]);
+            applyTypewriterEffect(storyText, storyLines[currentLineIndex++]);
         } else {
             primaryStage.setScene(createMBTIScene(primaryStage));
         }
@@ -98,13 +109,23 @@ public class Frame extends Application {
         backgroundImage.setFitHeight(620);
 
         TextArea MBTIText = new TextArea();
-        MBTIText.setFont(loadCustomFont("javafx/src/font.ttf", 20));
+        MBTIText.setFont(loadCustomFont("/font.ttf", 18));
         MBTIText.setEditable(false);
         MBTIText.setWrapText(true);
-        MBTIText.setText(MBTILines[currentMBTIIndex]);
+
+        // 텍스트 상자 스타일 개선
+        MBTIText.setStyle("-fx-control-inner-background: rgba(240, 248, 255, 0.9); " +
+                          "-fx-border-color: #5f9ea0; " +
+                          "-fx-border-radius: 10; " +
+                          "-fx-padding: 10; " +
+                          "-fx-text-fill: #333333;");
+
+        applyTypewriterEffect(MBTIText, MBTILines[currentMBTIIndex]);
 
         Button option1Button = new Button(MBTIOptions[currentMBTIIndex][0]);
+        option1Button.setFont(loadCustomFont("/font.ttf", 16));
         Button option2Button = new Button(MBTIOptions[currentMBTIIndex][1]);
+        option2Button.setFont(loadCustomFont("/font.ttf", 16));
 
         option1Button.setOnAction(e -> handleMBTIOption(primaryStage, MBTIText, option1Button, option2Button));
         option2Button.setOnAction(e -> handleMBTIOption(primaryStage, MBTIText, option1Button, option2Button));
@@ -123,7 +144,7 @@ public class Frame extends Application {
     private void handleMBTIOption(Stage primaryStage, TextArea MBTIText, Button option1Button, Button option2Button) {
         currentMBTIIndex++;
         if (currentMBTIIndex < MBTILines.length) {
-            MBTIText.setText(MBTILines[currentMBTIIndex]);
+            applyTypewriterEffect(MBTIText, MBTILines[currentMBTIIndex]);
             option1Button.setText(MBTIOptions[currentMBTIIndex][0]);
             option2Button.setText(MBTIOptions[currentMBTIIndex][1]);
         } else {
@@ -138,28 +159,31 @@ public class Frame extends Application {
         backgroundImage.setFitHeight(620);
 
         Button gamingButton = new Button("첫 번째 게임");
-        gamingButton.setFont(loadCustomFont("javafx/src/font.ttf", 20));
-        gamingButton.setOnAction(e -> new Gaming());
+        gamingButton.setFont(loadCustomFont("/font.ttf", 18));
+        gamingButton.setOnAction(e -> {
+            Stage gamingStage = new Stage();
+            new Gaming().start(gamingStage);
+        });
 
         Button cardButton = new Button("두 번째 게임");
-        cardButton.setFont(loadCustomFont("javafx/src/font.ttf", 20));
+        cardButton.setFont(loadCustomFont("/font.ttf", 18));
         cardButton.setOnAction(e -> {
-            Stage cardStage = new Stage(); // 새로운 Stage 생성
-            new card().start(cardStage); // 카드 게임 실행
+            Stage cardStage = new Stage();
+            new card().start(cardStage);
         });
 
         Button kysButton = new Button("세 번째 게임");
-        kysButton.setFont(loadCustomFont("javafx/src/font.ttf", 20));
+        kysButton.setFont(loadCustomFont("/font.ttf", 18));
         kysButton.setOnAction(e -> {
-            Stage myNatureStage = new Stage(); // 새로운 Stage 생성
-            new MyNatureGame().start(myNatureStage); // MyNatureGame 실행
+            Stage myNatureStage = new Stage();
+            new MyNatureGame().start(myNatureStage);
         });
 
         Button mywButton = new Button("네 번째 게임");
-        mywButton.setFont(loadCustomFont("javafx/src/font.ttf", 20));
+        mywButton.setFont(loadCustomFont("/font.ttf", 18));
         mywButton.setOnAction(e -> {
-            Stage breakoutStage = new Stage(); // 새로운 Stage 생성
-            new BreakoutGame().start(breakoutStage); // BreakoutGame 실행
+            Stage breakoutStage = new Stage();
+            new BreakoutGame().start(breakoutStage);
         });
 
         GridPane buttonPanel = new GridPane();
@@ -179,14 +203,31 @@ public class Frame extends Application {
 
     private Font loadCustomFont(String fontPath, float size) {
         try {
-            Font customFont = Font.loadFont(new File(fontPath).toURI().toString(), size);
+            String fontUrl = getClass().getResource(fontPath).toExternalForm();
+            Font customFont = Font.loadFont(fontUrl, size);
             return customFont != null ? customFont : Font.font("Serif", size);
         } catch (Exception e) {
             e.printStackTrace();
             return Font.font("Serif", size);
         }
     }
-    
+
+    private void applyTypewriterEffect(TextArea textArea, String text) {
+        textArea.clear();
+        Timeline timeline = new Timeline();
+        final StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < text.length(); i++) {
+            final int index = i;
+            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(50 * (i + 1)), e -> {
+                builder.append(text.charAt(index));
+                textArea.setText(builder.toString());
+            }));
+        }
+
+        timeline.play();
+    }
+
     public static void main(String[] args) {
         launch(args);
     }

@@ -44,7 +44,7 @@ public class card extends Application {
                 Button button = new Button();
                 button.setPrefSize(100, 100); // 카드 크기 설정
                 button.setStyle("-fx-background-color: transparent; -fx-border-color: black; -fx-border-radius: 10;");
-                button.setGraphic(new ImageView(new Image("file:src/img/back_img.PNG"))); // 뒷면 이미지
+                button.setGraphic(new ImageView(new Image("file:javafx/src/imag/kkw/back_img.PNG"))); // 뒷면 이미지
                 buttons[i][j] = button;
 
                 int finalI = i;
@@ -87,7 +87,7 @@ public class card extends Application {
     private void handleCardClick(Button button, int row, int col, Stage stage) {
         if (button.getStyle().contains("gray")) return; // 이미 매칭된 카드 클릭 방지
 
-        button.setGraphic(new ImageView(new Image("file:src/img/cardimg" + answer[row][col] + ".PNG"))); // 앞면 이미지
+        button.setGraphic(new ImageView(new Image("file:javafx/images/kkw/cardimg" + answer[row][col] + ".PNG"))); // 앞면 이미지
 
         if (firstClick == null) {
             // 첫 번째 클릭
@@ -118,8 +118,8 @@ public class card extends Application {
 
                 PauseTransition pause = new PauseTransition(Duration.seconds(0.5));
                 pause.setOnFinished(e -> {
-                    tempFirst.setGraphic(new ImageView(new Image("file:src/img/back_img.PNG"))); // 뒷면 이미지로 전환
-                    tempSecond.setGraphic(new ImageView(new Image("file:src/img/back_img.PNG"))); // 뒷면 이미지로 전환
+                    tempFirst.setGraphic(new ImageView(new Image("file:javafx/images/kkw/back_img.PNG"))); // 뒷면 이미지로 전환
+                    tempSecond.setGraphic(new ImageView(new Image("file:javafx/images/kkw/back_img.PNG"))); // 뒷면 이미지로 전환
                 });
                 pause.play();
             }

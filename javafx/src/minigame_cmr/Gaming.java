@@ -45,12 +45,12 @@ public class Gaming extends JFrame {
 	public Gaming() {
 		setTitle("gaming");
 		
-		spe = new ImageIcon("images/cmr/special.png");
-		x = new ImageIcon("images/cmr/x.png");
-		red = new ImageIcon("images/cmr/red.png");
-		blue = new ImageIcon("images/cmr/blue.png");
-		green = new ImageIcon("images/cmr/green.png");
-		yellow = new ImageIcon("images/cmr/yellow.png");
+		spe = new ImageIcon("javafx/images/cmr/special.png");
+		x = new ImageIcon("javafx/images/cmr/x.png");
+		red = new ImageIcon("javafx/images/cmr/red.png");
+		blue = new ImageIcon("javafx/images/cmr/blue.png");
+		green = new ImageIcon("javafx/images/cmr/green.png");
+		yellow = new ImageIcon("javafx/images/cmr/yellow.png");
 
 		c = getContentPane();
 

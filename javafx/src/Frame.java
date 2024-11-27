@@ -148,8 +148,42 @@ public class Frame extends Application {
             option1Button.setText(MBTIOptions[currentMBTIIndex][0]);
             option2Button.setText(MBTIOptions[currentMBTIIndex][1]);
         } else {
-            primaryStage.setScene(createMiniGameScene(primaryStage));
+            primaryStage.setScene(createIntermediateScene(primaryStage));
         }
+    }
+
+    private Scene createIntermediateScene(Stage primaryStage) {
+        BorderPane intermediateScreen = new BorderPane();
+        ImageView backgroundImage = new ImageView(new Image("file:javafx/images/storybackground.jpeg"));
+        backgroundImage.setFitWidth(520);
+        backgroundImage.setFitHeight(620);
+
+        TextArea intermediateText = new TextArea();
+        intermediateText.setFont(loadCustomFont("/font.ttf", 18));
+        intermediateText.setEditable(false);
+        intermediateText.setWrapText(true);
+
+        // 텍스트 상자 스타일
+        intermediateText.setStyle("-fx-control-inner-background: rgba(240, 248, 255, 0.9); " +
+                                  "-fx-border-color: #5f9ea0; " +
+                                  "-fx-border-radius: 10; " +
+                                  "-fx-padding: 10; " +
+                                  "-fx-text-fill: #333333;");
+
+        String intermediateMessage = "앞으로 우리의 여정은 더 험난해질 거야. 하지만 네가 포기하지 않고 끝까지 나를 도와줬으면 좋겠어. "
+                + "앞으로 총 4번의 고비가 찾아올 거야. 하나의 고비를 넘길 때마다, 너는 나를 깨어나게 할 수 있는 기회를 얻을 수 있어! 준비 됐어?";
+        applyTypewriterEffect(intermediateText, intermediateMessage);
+
+        Button nextButton = new Button("NEXT");
+        nextButton.setFont(loadCustomFont("/font.ttf", 16));
+        nextButton.setOnAction(e -> primaryStage.setScene(createMiniGameScene(primaryStage))); // 미니게임 화면으로 이동
+
+        VBox content = new VBox(20, intermediateText, nextButton);
+        content.setAlignment(Pos.CENTER);
+        intermediateScreen.setCenter(content);
+
+        StackPane root = new StackPane(backgroundImage, intermediateScreen);
+        return new Scene(root, 520, 620);
     }
 
     private Scene createMiniGameScene(Stage primaryStage) {

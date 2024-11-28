@@ -25,11 +25,11 @@ public class BreakoutGame extends Application {
     private boolean moveRight = false;
     private boolean paused = false;
     private boolean gameOver = false; // 게임 종료 상태를 저장하는 플래그
-    private static final int BLOCK_ROWS = 5;
-    private static final int BLOCK_COLS = 7;
+    private static final int BLOCK_ROWS = 3; // 벽돌 행 개수 감소
+    private static final int BLOCK_COLS = 5; // 벽돌 열 개수 감소
+    private static final int BLOCK_MARGIN = 10; // 간격 증가 (선택 사항)
     private static final int BLOCK_WIDTH = 50;
     private static final int BLOCK_HEIGHT = 20;
-    private static final int BLOCK_MARGIN = 5;
 
     private Stage primaryStage;
     private Canvas canvas;
@@ -44,21 +44,9 @@ public class BreakoutGame extends Application {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Brick Breaking Game");
 
-        Button startButton = new Button("게임 시작");
-        Button exitButton = new Button("게임 종료");
+        // 게임 설명 창 먼저 표시
+        showStoryDialog(() -> showStartMenu());
 
-        startButton.setOnAction(e -> startGame());
-        exitButton.setOnAction(e -> primaryStage.close());
-
-        VBox layout = new VBox(10);
-        layout.getChildren().addAll(startButton, exitButton);
-        layout.setStyle("-fx-padding: 20; -fx-alignment: center;");
-
-        Scene startScene = new Scene(layout, 400, 300);
-        // CSS 적용
-        startScene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
-
-        primaryStage.setScene(startScene);
         primaryStage.show();
     }
 
@@ -104,6 +92,77 @@ public class BreakoutGame extends Application {
                 render(gc);
             }
         }.start();
+    }
+    
+    private void showStoryDialog(Runnable onCloseCallback) {
+        Stage storyStage = new Stage();
+        storyStage.initModality(Modality.APPLICATION_MODAL);
+        storyStage.setTitle("게임 설명");
+
+        // X 버튼 클릭 시 애플리케이션 종료 설정
+        storyStage.setOnCloseRequest(event -> {
+            Platform.exit();  // JavaFX 애플리케이션 종료
+            System.exit(0);   // JVM 종료
+        });
+
+        // 텍스트 스타일
+        Label storyLabel = new Label(
+            "플레이어는 알 속에 갇힌 캐릭터를 구출하기 위해\n" +
+            "알 주위에 쌓인 벽돌을 깨부숴야 합니다.\n\n" +
+            "보호막 같은 이 벽돌들은 캐릭터의 성장을 막고 있는 장애물입니다.\n" +
+            "P를 눌러 일시 정지, 방향키로 이동하세요!"
+        );
+        storyLabel.setStyle(
+            "-fx-font-size: 16px; " +           // 텍스트 크기
+            "-fx-text-fill: white; " +          // 텍스트 색상을 흰색으로 설정
+            "-fx-text-alignment: center; " +    // 텍스트 중앙 정렬
+            "-fx-wrap-text: true;"              // 줄바꿈 활성화
+        );
+
+        // 버튼 스타일
+        Button continueButton = new Button("계속하기");
+        continueButton.setStyle(
+            "-fx-font-size: 14px; " +
+            "-fx-text-fill: white; " +
+            "-fx-background-color: #28a745; " +
+            "-fx-padding: 10 20; " +
+            "-fx-border-radius: 5; " +
+            "-fx-background-radius: 5;"
+        );
+
+        continueButton.setOnAction(e -> {
+            storyStage.close();
+            onCloseCallback.run(); // 설명 창 종료 후 콜백 실행
+        });
+
+        // 레이아웃 스타일
+        VBox layout = new VBox(20, storyLabel, continueButton);
+        layout.setStyle(
+            "-fx-padding: 20; " +
+            "-fx-alignment: center; " +
+            "-fx-background-color: #333333;" // 어두운 회색 배경
+        );
+
+        // 장면 설정
+        Scene storyScene = new Scene(layout, 400, 250);
+        storyStage.setScene(storyScene);
+        storyStage.showAndWait();
+    }
+    
+    private void showStartMenu() {
+        Button startButton = new Button("게임 시작");
+        Button exitButton = new Button("게임 종료");
+
+        startButton.setOnAction(e -> startGame());
+        exitButton.setOnAction(e -> primaryStage.close());
+
+        VBox layout = new VBox(10, startButton, exitButton);
+        layout.setStyle("-fx-padding: 20; -fx-alignment: center;");
+
+        Scene startScene = new Scene(layout, 400, 300);
+        startScene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+
+        primaryStage.setScene(startScene);
     }
 
     private void togglePause() {
@@ -174,22 +233,96 @@ public class BreakoutGame extends Application {
             ball.reverseY();
         }
 
+        boolean allBlocksCleared = true; // 모든 벽돌이 깨졌는지 확인
         for (Block[] row : blocks) {
             for (Block block : row) {
-                if (block.isVisible() && ball.getY() <= block.getY() + block.getHeight() &&
+                if (block.isVisible()) {
+                    allBlocksCleared = false;
+                    if (ball.getY() <= block.getY() + block.getHeight() &&
                         ball.getX() + ball.getRadius() >= block.getX() &&
                         ball.getX() - ball.getRadius() <= block.getX() + block.getWidth()) {
-                    ball.reverseY();
-                    block.setVisible(false);
+                        ball.reverseY();
+                        block.setVisible(false);
+                    }
                 }
             }
         }
 
+        if (allBlocksCleared) {
+            showGameClear(); // 모든 벽돌이 깨졌을 때 게임 클리어 창 표시
+        }
+
         if (ball.getY() >= 500) {
-            gameOver = true; // 게임 종료 플래그 설정
+            gameOver = true; // 공이 바닥에 닿으면 게임 종료
             showGameOver(); // 게임 종료 창 표시
         }
     }
+    
+    private void showGameClear() {
+        paused = true;
+
+        Platform.runLater(() -> {
+            // 클리어 창 생성
+            Stage clearStage = new Stage();
+            clearStage.initModality(Modality.APPLICATION_MODAL);
+            clearStage.setTitle("게임 클리어");
+
+            // 질문 및 선택지 내용
+            Label clearLabel = new Label("훌륭해! 네가 깬 보호막 덕분에\n조금 더 성장할 수 있을 것 같아.\n이제 첫 번째 질문을 할게.");
+            clearLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: black; -fx-text-alignment: center; -fx-wrap-text: true;");
+
+            Label questionLabel = new Label("너는 혼자 있는 시간이 좋아? 아니면 사람들과 함께 있는 게 더 좋아?");
+            questionLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: black; -fx-text-alignment: center; -fx-wrap-text: true;");
+
+            // 내향적 선택 버튼
+            Button option1 = new Button("혼자 있는 시간이 좋아 (내향적)");
+            option1.setStyle("-fx-font-size: 12px; -fx-background-color: #5a9bd4; -fx-text-fill: white;");
+            option1.setOnAction(e -> {
+                System.out.println("선택한 답변: 혼자 있는 시간이 좋아 (내향적)");
+                exitGame(); // 게임 종료
+            });
+
+            // 외향적 선택 버튼
+            Button option2 = new Button("사람들과 함께 있는 게 좋아 (외향적)");
+            option2.setStyle("-fx-font-size: 12px; -fx-background-color: #5a9bd4; -fx-text-fill: white;");
+            option2.setOnAction(e -> {
+                System.out.println("선택한 답변: 사람들과 함께 있는 게 좋아 (외향적)");
+                exitGame(); // 게임 종료
+            });
+
+            // 창 닫기 버튼 (X 버튼) 이벤트 처리
+            clearStage.setOnCloseRequest(event -> {
+                System.out.println("X 버튼으로 창 닫기.");
+                exitGame(); // 게임 종료
+            });
+
+            // 레이아웃 구성 
+            VBox layout = new VBox(15, clearLabel, questionLabel, option1, option2);
+            layout.setStyle("-fx-padding: 20; -fx-alignment: center; -fx-background-color: #f0f0f0;");
+            Scene clearScene = new Scene(layout, 400, 300);
+            clearStage.setScene(clearScene);
+
+            clearStage.show();
+        });
+    }
+    
+    private void exitGame() {
+        System.out.println("게임 종료");
+        Platform.exit(); // JavaFX 애플리케이션 종료
+        System.exit(0); // JVM 종료
+    }
+
+    private void closeStage(Stage stage) {
+        Platform.runLater(() -> {
+            if (stage != null && stage.isShowing()) {
+                stage.close(); // 강제로 창 닫기
+                System.out.println("창이 정상적으로 닫혔습니다.");
+            } else {
+                System.out.println("창이 이미 닫혀 있습니다.");
+            }
+        });
+    }
+
 
     private void showGameOver() {
         Platform.runLater(() -> {

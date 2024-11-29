@@ -27,12 +27,28 @@ public class card extends Application {
     private int firstRow = -1, firstCol = -1;
     private int matchCount = 0;
 
+    private boolean isFirstGame = true;  // 게임이 처음 시작할 때만 설명 창을 띄우도록 추적하는 변수
+
     @Override
     public void start(Stage stage) {
         initializeGame(stage);
     }
 
     private void initializeGame(Stage stage) {
+        // 게임 시작 전에 설명을 보여주는 알림 창 (첫 게임만)
+        if (isFirstGame) {
+            Alert gameStartAlert = new Alert(Alert.AlertType.INFORMATION);
+            gameStartAlert.setTitle("게임 시작!");
+            gameStartAlert.setHeaderText(null);
+            gameStartAlert.setContentText("게임 설명:\n\n" +
+                    "다양한 카드들은 캐릭터의 기억과 감각을 상징하며, 플레이어는 이들을 짝지어 올바르게 맞추어야 합니다. \n" +
+                    "기억과 감각을 찾으면 캐릭터는 점점 더 성장할 준비를 합니다.\n\n" +
+                    "마우스를 이용하여 카드를 클릭하여 카드 짝을 맞추면 되는 게임입니다.");
+            gameStartAlert.showAndWait(); // 알림 창을 띄우고 사용자가 확인할 때까지 대기
+
+            isFirstGame = false;  // 첫 게임 이후에는 설명 창을 띄우지 않도록 설정
+        }
+
         // GridPane에 버튼 추가
         GridPane grid = new GridPane();
         grid.setHgap(10); // 카드 간의 가로 간격
@@ -63,7 +79,7 @@ public class card extends Application {
         // StackPane으로 감싸서 화면 가운데 배치
         StackPane root = new StackPane();
         root.setAlignment(Pos.CENTER); // 가운데 정렬
-        root.setPrefSize(400, 400); // StackPane 크기 설정
+        root.setPrefSize(390, 390); // StackPane 크기 설정
         root.getChildren().add(grid);
 
         // 게임 크기에 따라 GridPane의 위치 변경
@@ -77,7 +93,7 @@ public class card extends Application {
             grid.setTranslateY(0);
         }
 
-        Scene scene = new Scene(root, 400, 400);
+        Scene scene = new Scene(root, 390, 390);
         stage.setScene(scene);
         stage.setTitle("카드 매칭 게임");
         stage.show();
@@ -165,7 +181,7 @@ public class card extends Application {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("게임 완료!");
             alert.setHeaderText(null);
-            alert.setContentText("게임 클리어 했으므로 질문권을 드립니다. 질문에 답해 주세요:\n" +
+            alert.setContentText("게임 클리어\n" + "너 덕분에 내가 잃어버린 기억을 다시 되찾았어.\n 이제 마지막 질문을 할게\n" + 
                     "기억에 남는 순간들을 되새길 때, 너는 그 순간을 다른 사람들과 함께 공유하는 편이야, \n아니면 혼자 조용히 되새기는 걸 좋아해?");
 
             ButtonType choiceE = new ButtonType("다른 사람들과 공유하는 걸 좋아해.");

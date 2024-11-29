@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 import minigame_cmr.Gaming;
 import minigame_kkw.card;
@@ -35,10 +37,15 @@ public class Frame extends Application {
             {"차분하게 분석하려고 해", "상대방의 감정을 먼저 생각해"}
     };
     private int currentMBTIIndex = 0;
+    
+    private MediaPlayer bgmPlayer; // 배경음악 MediaPlayer 추가
 
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("My Nature");
+        
+        // 배경음악 초기화 및 재생
+        initializeBackgroundMusic();
 
         // 첫 번째 화면: Start 버튼 화면 설정
         BorderPane startScreen = new BorderPane();
@@ -58,6 +65,23 @@ public class Frame extends Application {
         Scene scene = new Scene(startScreen, 520, 620);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+    
+    private void initializeBackgroundMusic() {
+        try {
+            // 배경음악 파일 경로
+            String bgmPath = getClass().getResource("javafx/src/MyNature_BGM.mp3").toExternalForm();
+            Media bgmMedia = new Media(bgmPath);
+            bgmPlayer = new MediaPlayer(bgmMedia);
+
+            // 무한 반복 재생 설정
+            bgmPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            bgmPlayer.setVolume(0.5); // 음량 조절 (0.0 ~ 1.0)
+            bgmPlayer.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("배경음악 파일을 로드할 수 없습니다. 경로를 확인하세요.");
+        }
     }
 
     private Scene createStoryScene(Stage primaryStage) {

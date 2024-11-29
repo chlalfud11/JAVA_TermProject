@@ -14,6 +14,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import java.util.Optional;
 
 import java.util.Random;
 
@@ -34,6 +37,10 @@ public class BreakoutGame extends Application {
     private Stage primaryStage;
     private Canvas canvas;
     private GraphicsContext gc;
+    private Stage clearStage; // 클래스 멤버 변수로 선언
+    
+    private boolean gameCleared = false; // 게임 클리어 상태 플래그
+
 
     public static void main(String[] args) {
         launch(args);
@@ -217,8 +224,8 @@ public class BreakoutGame extends Application {
     }
 
     private void update() {
-        if (gameOver) {
-            return; // 게임 종료 상태라면 업데이트 중단
+        if (gameOver || gameCleared) {
+            return; // 게임 종료 상태나 클리어 상태라면 업데이트 중단
         }
 
         ball.move();
@@ -249,7 +256,8 @@ public class BreakoutGame extends Application {
         }
 
         if (allBlocksCleared) {
-            showGameClear(); // 모든 벽돌이 깨졌을 때 게임 클리어 창 표시
+            gameCleared = true; // 게임 클리어 상태로 설정
+            showGameClear(); // 게임 클리어 창 표시
         }
 
         if (ball.getY() >= 500) {
@@ -257,52 +265,33 @@ public class BreakoutGame extends Application {
             showGameOver(); // 게임 종료 창 표시
         }
     }
+
     
     private void showGameClear() {
-        paused = true;
-
         Platform.runLater(() -> {
-            // 클리어 창 생성
-            Stage clearStage = new Stage();
-            clearStage.initModality(Modality.APPLICATION_MODAL);
-            clearStage.setTitle("게임 클리어");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("게임 클리어!");
+            alert.setHeaderText(null);
+            alert.setContentText("게임 클리어 했으므로 질문권을 드립니다. 질문에 답해 주세요:\n" +
+                    "기억에 남는 순간들을 되새길 때, 너는 그 순간을 다른 사람들과 함께 공유하는 편이야, \n" +
+                    "아니면 혼자 조용히 되새기는 걸 좋아해?");
 
-            // 질문 및 선택지 내용
-            Label clearLabel = new Label("훌륭해! 네가 깬 보호막 덕분에\n조금 더 성장할 수 있을 것 같아.\n이제 첫 번째 질문을 할게.");
-            clearLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: black; -fx-text-alignment: center; -fx-wrap-text: true;");
+            // 선택지 추가
+            ButtonType choiceE = new ButtonType("다른 사람들과 공유하는 걸 좋아해.");
+            ButtonType choiceI = new ButtonType("혼자 조용히 되새기는 게 좋아.");
+            alert.getButtonTypes().setAll(choiceE, choiceI);
 
-            Label questionLabel = new Label("너는 혼자 있는 시간이 좋아? 아니면 사람들과 함께 있는 게 더 좋아?");
-            questionLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: black; -fx-text-alignment: center; -fx-wrap-text: true;");
-
-            // 내향적 선택 버튼
-            Button option1 = new Button("혼자 있는 시간이 좋아");
-            option1.setStyle("-fx-font-size: 12px; -fx-background-color: #5a9bd4; -fx-text-fill: white;");
-            option1.setOnAction(e -> {
-                System.out.println("선택한 답변: 혼자 있는 시간이 좋아 (내향적)");
-                exitGame(); // 게임 종료
+            // 선택지 결과 처리
+            Optional<ButtonType> result = alert.showAndWait();
+            result.ifPresent(answer -> {
+                if (answer == choiceE) {
+                    System.out.println("선택한 답변: 다른 사람들과 공유하는 걸 좋아해.");
+                } else if (answer == choiceI) {
+                    System.out.println("선택한 답변: 혼자 조용히 되새기는 게 좋아.");
+                }
+                //창 닫기
+                alert.close();
             });
-
-            // 외향적 선택 버튼
-            Button option2 = new Button("사람들과 함께 있는 게 좋아");
-            option2.setStyle("-fx-font-size: 12px; -fx-background-color: #5a9bd4; -fx-text-fill: white;");
-            option2.setOnAction(e -> {
-                System.out.println("선택한 답변: 사람들과 함께 있는 게 좋아 (외향적)");
-                exitGame(); // 게임 종료
-            });
-
-            // 창 닫기 버튼 (X 버튼) 이벤트 처리
-            clearStage.setOnCloseRequest(event -> {
-                System.out.println("X 버튼으로 창 닫기.");
-                exitGame(); // 게임 종료
-            });
-
-            // 레이아웃 구성 
-            VBox layout = new VBox(15, clearLabel, questionLabel, option1, option2);
-            layout.setStyle("-fx-padding: 20; -fx-alignment: center; -fx-background-color: #f0f0f0;");
-            Scene clearScene = new Scene(layout, 400, 300);
-            clearStage.setScene(clearScene);
-
-            clearStage.show();
         });
     }
     

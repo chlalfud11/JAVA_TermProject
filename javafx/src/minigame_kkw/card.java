@@ -44,9 +44,9 @@ public class card extends Application {
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
                 Button button = new Button();
-                button.setPrefSize(80, 80); // 카드 크기 설정
+                button.setPrefSize(90, 90); // 카드 크기 설정
                 button.setStyle("-fx-background-color: transparent; -fx-border-color: black; -fx-border-radius: 10;");
-                button.setGraphic(new ImageView(new Image("file:javafx/src/imag/kkw/back_img.PNG"))); // 뒷면 이미지
+                button.setGraphic(new ImageView(new Image("file:javafx/images/kkw/backimg.PNG"))); // 뒷면 이미지
                 buttons[i][j] = button;
 
                 int finalI = i;
@@ -58,13 +58,26 @@ public class card extends Application {
         }
 
         initAnswer();
+        resetCardBack(); // 초기화 시 모든 카드 뒷면 이미지 설정
 
-        // 카드 그리드를 StackPane으로 감싸서 화면 가운데 배치
+        // StackPane으로 감싸서 화면 가운데 배치
         StackPane root = new StackPane();
         root.setAlignment(Pos.CENTER); // 가운데 정렬
+        root.setPrefSize(400, 400); // StackPane 크기 설정
         root.getChildren().add(grid);
 
-        Scene scene = new Scene(root, 450, 450);
+        // 게임 크기에 따라 GridPane의 위치 변경
+        if (gridSize == 2) {
+            // 2x2 게임일 경우 (100, 100) 지점에서 시작
+            grid.setTranslateX(100);
+            grid.setTranslateY(100);
+        } else if (gridSize == 4) {
+            // 4x4 게임일 경우 (0, 0) 지점에서 시작
+            grid.setTranslateX(0);
+            grid.setTranslateY(0);
+        }
+
+        Scene scene = new Scene(root, 400, 400);
         stage.setScene(scene);
         stage.setTitle("카드 매칭 게임");
         stage.show();
@@ -82,6 +95,15 @@ public class card extends Application {
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
                 answer[i][j] = cardValues.get(index++);
+            }
+        }
+    }
+
+    private void resetCardBack() {
+        // 게임 시작 시 모든 카드의 뒷면 이미지를 설정
+        for (int i = 0; i < gridSize; i++) {
+            for (int j = 0; j < gridSize; j++) {
+                buttons[i][j].setGraphic(new ImageView(new Image("file:javafx/images/kkw/backimg.PNG"))); // 뒷면 이미지로 초기화
             }
         }
     }
@@ -120,8 +142,8 @@ public class card extends Application {
 
                 PauseTransition pause = new PauseTransition(Duration.seconds(0.5));
                 pause.setOnFinished(e -> {
-                    tempFirst.setGraphic(new ImageView(new Image("file:javafx/images/kkw/back_img.PNG"))); // 뒷면 이미지로 전환
-                    tempSecond.setGraphic(new ImageView(new Image("file:javafx/images/kkw/back_img.PNG"))); // 뒷면 이미지로 전환
+                    tempFirst.setGraphic(new ImageView(new Image("file:javafx/images/kkw/backimg.PNG"))); // 뒷면 이미지로 전환
+                    tempSecond.setGraphic(new ImageView(new Image("file:javafx/images/kkw/backimg.PNG"))); // 뒷면 이미지로 전환
                 });
                 pause.play();
             }
@@ -146,18 +168,18 @@ public class card extends Application {
             alert.setContentText("게임 클리어 했으므로 질문권을 드립니다. 질문에 답해 주세요:\n" +
                     "기억에 남는 순간들을 되새길 때, 너는 그 순간을 다른 사람들과 함께 공유하는 편이야, \n아니면 혼자 조용히 되새기는 걸 좋아해?");
 
-                ButtonType choiceE= new ButtonType("다른 사람들과 공유하는 걸 좋아해.");
-                ButtonType choiceI = new ButtonType("혼자 조용히 되새기는 게 좋아.");
-                alert.getButtonTypes().setAll(choiceE, choiceI);
+            ButtonType choiceE = new ButtonType("다른 사람들과 공유하는 걸 좋아해.");
+            ButtonType choiceI = new ButtonType("혼자 조용히 되새기는 게 좋아.");
+            alert.getButtonTypes().setAll(choiceE, choiceI);
 
-                Optional<ButtonType> result = alert.showAndWait();
-                result.ifPresent(answer -> {
-                    if (answer == choiceE) {
-                        System.out.println("선택한 답변: 다른 사람들과 공유하는 걸 좋아해.");
-                    } else if (answer == choiceI) {
-                        System.out.println("선택한 답변: 혼자 조용히 되새기는 게 좋아.");
-                    }
-                });
+            Optional<ButtonType> result = alert.showAndWait();
+            result.ifPresent(answer -> {
+                if (answer == choiceE) {
+                    System.out.println("선택한 답변: 다른 사람들과 공유하는 걸 좋아해.");
+                } else if (answer == choiceI) {
+                    System.out.println("선택한 답변: 혼자 조용히 되새기는 게 좋아.");
+                }
+            });
         }
     }
 

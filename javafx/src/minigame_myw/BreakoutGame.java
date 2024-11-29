@@ -275,7 +275,7 @@ public class BreakoutGame extends Application {
             questionLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: black; -fx-text-alignment: center; -fx-wrap-text: true;");
 
             // 내향적 선택 버튼
-            Button option1 = new Button("혼자 있는 시간이 좋아 (내향적)");
+            Button option1 = new Button("혼자 있는 시간이 좋아");
             option1.setStyle("-fx-font-size: 12px; -fx-background-color: #5a9bd4; -fx-text-fill: white;");
             option1.setOnAction(e -> {
                 System.out.println("선택한 답변: 혼자 있는 시간이 좋아 (내향적)");
@@ -283,7 +283,7 @@ public class BreakoutGame extends Application {
             });
 
             // 외향적 선택 버튼
-            Button option2 = new Button("사람들과 함께 있는 게 좋아 (외향적)");
+            Button option2 = new Button("사람들과 함께 있는 게 좋아");
             option2.setStyle("-fx-font-size: 12px; -fx-background-color: #5a9bd4; -fx-text-fill: white;");
             option2.setOnAction(e -> {
                 System.out.println("선택한 답변: 사람들과 함께 있는 게 좋아 (외향적)");

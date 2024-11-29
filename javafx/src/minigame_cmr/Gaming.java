@@ -7,8 +7,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.geometry.Pos;
 
 import java.util.Random;
 
@@ -26,6 +28,27 @@ public class Gaming extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        showStoryScene(primaryStage); // 게임 스토리 화면으로 시작
+    }
+
+    private void showStoryScene(Stage primaryStage) {
+        VBox storyLayout = new VBox(20);
+        storyLayout.setAlignment(Pos.CENTER);
+
+        Text storyText = new Text("퍼즐 조각들은 캐릭터의 정체성을 나타내며, \n" +
+                "당신은 퍼즐 조각을 맞추어 캐릭터의 성장을 돕게 됩니다.");
+        Button nextButton = new Button("Next");
+
+        nextButton.setOnAction(e -> startGame(primaryStage));
+
+        storyLayout.getChildren().addAll(storyText, nextButton);
+
+        Scene storyScene = new Scene(storyLayout, 400, 300);
+        primaryStage.setScene(storyScene);
+        primaryStage.show();
+    }
+
+    private void startGame(Stage primaryStage) {
         Pane root = new Pane();
         GridPane gridPane = new GridPane();
         gridPane.setLayoutX(50);
@@ -88,7 +111,6 @@ public class Gaming extends Application {
 
             // 위치 교환 로직
             if (swapTiles(firstClicked, secondClicked)) {
-                updateScore(100); // 블록 교환 성공 시 점수 추가
                 checkMatches(); // 매칭 확인 및 처리
             }
 
@@ -115,7 +137,6 @@ public class Gaming extends Application {
 
             return true; // 교환 성공
         } else {
-            System.out.println("Tiles are not adjacent!");
             return false; // 교환 실패
         }
     }
@@ -159,6 +180,10 @@ public class Gaming extends Application {
         if (foundMatch) {
             removeAndGenerateTiles(matched); // 매칭된 블록 제거 및 새로운 블록 생성
         }
+
+        if (score >= 3000) {
+            showGameClearScreen();
+        }
     }
 
     private void removeAndGenerateTiles(boolean[][] matched) {
@@ -179,6 +204,51 @@ public class Gaming extends Application {
     private void updateScore(int points) {
         score += points;
         scoreText.setText("Score: " + score);
+    }
+
+    private void showGameClearScreen() {
+        Stage clearStage = new Stage();
+        VBox clearLayout = new VBox(20);
+        clearLayout.setAlignment(Pos.CENTER);
+
+        Text clearMessage = new Text("게임을 클리어한 것을 축하해! 그럼 다음 질문을 할게!");
+        Button nextButton = new Button("Next");
+
+        nextButton.setOnAction(e -> showMBTIScene(clearStage));
+
+        clearLayout.getChildren().addAll(clearMessage, nextButton);
+
+        Scene clearScene = new Scene(clearLayout, 300, 200);
+        clearStage.setScene(clearScene);
+        clearStage.show();
+    }
+
+    private void showMBTIScene(Stage previousStage) {
+        previousStage.close(); // 이전 창 닫기
+
+        Stage mbtiStage = new Stage();
+        VBox mbtiLayout = new VBox(20);
+        mbtiLayout.setAlignment(Pos.CENTER);
+
+        Text question = new Text("친구가 시험에 떨어졌다고 했을 때 넌 뭐라고 말 할 거야?");
+        Button aloneButton = new Button("다음엔 꼭 붙을 거야!");
+        Button togetherButton = new Button("몇점인데?");
+
+        aloneButton.setOnAction(e -> {
+            System.out.println("F 선택");
+            mbtiStage.close();
+        });
+
+        togetherButton.setOnAction(e -> {
+            System.out.println("T 선택");
+            mbtiStage.close();
+        });
+
+        mbtiLayout.getChildren().addAll(question, aloneButton, togetherButton);
+
+        Scene mbtiScene = new Scene(mbtiLayout, 300, 200);
+        mbtiStage.setScene(mbtiScene);
+        mbtiStage.show();
     }
 
     public static void main(String[] args) {

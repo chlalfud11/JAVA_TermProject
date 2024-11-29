@@ -12,8 +12,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 
-import java.io.File;
-
 import minigame_cmr.Gaming;
 import minigame_kkw.card;
 import minigame_kys.MyNatureGame;
@@ -86,7 +84,12 @@ public class Frame extends Application {
         nextButton.setFont(loadCustomFont("/font.ttf", 16));
         nextButton.setOnAction(e -> showNextStoryLine(primaryStage));
 
-        VBox content = new VBox(20, storyText, nextButton);
+        // 이미지 추가
+        ImageView contentImage = new ImageView(new Image("file:javafx/images/1st.png"));
+        contentImage.setFitWidth(200);
+        contentImage.setFitHeight(200);
+
+        VBox content = new VBox(20, storyText, contentImage, nextButton);
         content.setAlignment(Pos.CENTER);
         storyScreen.setCenter(content);
 
@@ -98,7 +101,7 @@ public class Frame extends Application {
         if (currentLineIndex < storyLines.length) {
             applyTypewriterEffect(storyText, storyLines[currentLineIndex++]);
         } else {
-            primaryStage.setScene(createMBTIScene(primaryStage));
+            primaryStage.setScene(createMBTIScene(primaryStage)); // 수정된 부분: MBTI 화면으로 전환
         }
     }
 
@@ -137,6 +140,7 @@ public class Frame extends Application {
         content.setAlignment(Pos.CENTER);
 
         MBTIScreen.setCenter(content);
+
         StackPane root = new StackPane(backgroundImage, MBTIScreen);
         return new Scene(root, 520, 620);
     }
@@ -176,9 +180,14 @@ public class Frame extends Application {
 
         Button nextButton = new Button("NEXT");
         nextButton.setFont(loadCustomFont("/font.ttf", 16));
-        nextButton.setOnAction(e -> primaryStage.setScene(createMiniGameScene(primaryStage))); // 미니게임 화면으로 이동
+        nextButton.setOnAction(e -> primaryStage.setScene(createMiniGameScene(primaryStage)));
 
-        VBox content = new VBox(20, intermediateText, nextButton);
+        // 이미지 추가
+        ImageView contentImage = new ImageView(new Image("file:javafx/images/1st.png"));
+        contentImage.setFitWidth(200);
+        contentImage.setFitHeight(200);
+
+        VBox content = new VBox(20, intermediateText, contentImage, nextButton);
         content.setAlignment(Pos.CENTER);
         intermediateScreen.setCenter(content);
 

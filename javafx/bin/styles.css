@@ -1,0 +1,6 @@
+.text-area {
+	-fx-control-inner-background: transparent; 
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+}
+

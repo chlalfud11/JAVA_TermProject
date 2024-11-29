@@ -263,10 +263,56 @@ public class Frame extends Application {
         buttonPanel.setAlignment(Pos.CENTER);
 
         nextScreen.setCenter(buttonPanel);
+        
+        Button nextButton = new Button("NEXT");
+        nextButton.setFont(loadCustomFont("/font.ttf", 16));
+        nextButton.setOnAction(e -> primaryStage.setScene(createFinalScene(primaryStage)));
+
+        VBox bottomPanel = new VBox(nextButton);
+        bottomPanel.setAlignment(Pos.CENTER);
+        bottomPanel.setStyle("-fx-padding: 10 0 20 0;"); // 아래쪽 여백을 줄여 버튼 위치를 위로 올림
+        nextScreen.setBottom(bottomPanel);
+
 
         StackPane root = new StackPane(backgroundImage, nextScreen);
         return new Scene(root, 520, 620);
     }
+    
+    private Scene createFinalScene(Stage primaryStage) {
+        BorderPane finalScreen = new BorderPane();
+        ImageView backgroundImage = new ImageView(new Image("file:javafx/images/storybackground.jpeg"));
+        backgroundImage.setFitWidth(520);
+        backgroundImage.setFitHeight(620);
+
+        TextArea finalText = new TextArea();
+        finalText.setFont(loadCustomFont("/font.ttf", 18));
+        finalText.setEditable(false);
+        finalText.setWrapText(true);
+
+        // 텍스트 상자 스타일
+        finalText.setStyle("-fx-control-inner-background: rgba(240, 248, 255, 0.9); " +
+                           "-fx-border-color: #5f9ea0; " +
+                           "-fx-border-radius: 10; " +
+                           "-fx-padding: 10; " +
+                           "-fx-text-fill: #333333;");
+
+        // 타자기 효과로 텍스트 출력
+        applyTypewriterEffect(finalText, "정말 대단해! 지금까지 여러 고난이 있었지만, 너 덕분에 잘 헤쳐나갈 수 있었어.\n"
+                + "난 곧 깨어날 거야! 내 모습이 어떤지 궁금하지 않아?");
+
+        // 이미지 추가
+        ImageView finalImage = new ImageView(new Image("file:javafx/images/3rd.png"));
+        finalImage.setFitWidth(300);
+        finalImage.setFitHeight(200);
+
+        VBox content = new VBox(20, finalText, finalImage);
+        content.setAlignment(Pos.CENTER);
+        finalScreen.setCenter(content);
+
+        StackPane root = new StackPane(backgroundImage, finalScreen);
+        return new Scene(root, 520, 620);
+    }
+
 
     private Font loadCustomFont(String fontPath, float size) {
         try {

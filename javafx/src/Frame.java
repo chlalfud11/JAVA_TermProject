@@ -225,28 +225,28 @@ public class Frame extends Application {
         backgroundImage.setFitWidth(520);
         backgroundImage.setFitHeight(620);
 
-        Button gamingButton = new Button("첫 번째 게임");
+        Button gamingButton = new Button("자아의 조각을 찾아라");
         gamingButton.setFont(loadCustomFont("/font.ttf", 18));
         gamingButton.setOnAction(e -> {
             Stage gamingStage = new Stage();
             new Gaming().start(gamingStage);
         });
 
-        Button cardButton = new Button("두 번째 게임");
+        Button cardButton = new Button("기억의 조화");
         cardButton.setFont(loadCustomFont("/font.ttf", 18));
         cardButton.setOnAction(e -> {
             Stage cardStage = new Stage();
             new card().start(cardStage);
         });
 
-        Button kysButton = new Button("세 번째 게임");
+        Button kysButton = new Button("위험을 피해 성장하라");
         kysButton.setFont(loadCustomFont("/font.ttf", 18));
         kysButton.setOnAction(e -> {
             Stage myNatureStage = new Stage();
             new MyNatureGame().start(myNatureStage);
         });
 
-        Button mywButton = new Button("네 번째 게임");
+        Button mywButton = new Button("알의 보호막을 깨라");
         mywButton.setFont(loadCustomFont("/font.ttf", 18));
         mywButton.setOnAction(e -> {
             Stage breakoutStage = new Stage();

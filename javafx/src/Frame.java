@@ -70,7 +70,7 @@ public class Frame extends Application {
     private void initializeBackgroundMusic() {
         try {
             // 배경음악 파일 경로
-            String bgmPath = getClass().getResource("javafx/src/MyNature_BGM.mp3").toExternalForm();
+            String bgmPath = getClass().getResource("/MyNature_BGM.mp3").toExternalForm();
             Media bgmMedia = new Media(bgmPath);
             bgmPlayer = new MediaPlayer(bgmMedia);
 

@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
@@ -230,25 +231,51 @@ public class Gaming extends Application {
         VBox mbtiLayout = new VBox(20);
         mbtiLayout.setAlignment(Pos.CENTER);
 
-        Text question = new Text("친구가 시험에 떨어졌다고 했을 때 넌 뭐라고 말 할 거야?");
+        Text question = new Text("친구가 시험에 떨어졌다고 했을 때,\n 넌 뭐라고 말 할 거야?");
         Button aloneButton = new Button("다음엔 꼭 붙을 거야!");
         Button togetherButton = new Button("몇점인데?");
 
-        aloneButton.setOnAction(e -> {
-            System.out.println("F 선택");
-            mbtiStage.close();
-        });
-
-        togetherButton.setOnAction(e -> {
-            System.out.println("T 선택");
-            mbtiStage.close();
-        });
+        aloneButton.setOnAction(e -> showThanksScreen(mbtiStage));
+        togetherButton.setOnAction(e -> showThanksScreen(mbtiStage));
 
         mbtiLayout.getChildren().addAll(question, aloneButton, togetherButton);
 
         Scene mbtiScene = new Scene(mbtiLayout, 300, 200);
         mbtiStage.setScene(mbtiScene);
         mbtiStage.show();
+    }
+
+    private void showThanksScreen(Stage previousStage) {
+        previousStage.close(); // 이전 창 닫기
+
+        Stage thanksStage = new Stage();
+        VBox thanksLayout = new VBox(20);
+        thanksLayout.setAlignment(Pos.CENTER);
+
+        // 이미지 추가
+        ImageView imageView = new ImageView(new Image("file:javafx/images/2nd.png"));
+        imageView.setFitWidth(300);
+        imageView.setFitHeight(200);
+
+        // 메시지 추가
+        Text thanksMessage = new Text("고마워! 너 덕분에 난 조금씩 깨어나고 있어!");
+        thanksMessage.setFont(loadCustomFont("/font.ttf", 18)); // 폰트 적용
+
+        thanksLayout.getChildren().addAll(imageView, thanksMessage);
+
+        Scene thanksScene = new Scene(thanksLayout, 400, 300);
+        thanksStage.setScene(thanksScene);
+        thanksStage.show();
+    }
+
+    private Font loadCustomFont(String fontPath, int size) {
+        try {
+            String fontUrl = getClass().getResource(fontPath).toExternalForm();
+            return Font.loadFont(fontUrl, size);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Font.font("Arial", size); // 기본 폰트 대체
+        }
     }
 
     public static void main(String[] args) {

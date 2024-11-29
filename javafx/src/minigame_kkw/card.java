@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -16,6 +17,7 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class card extends Application {
     private int gridSize = 2; // 시작 크기 2x2
@@ -42,7 +44,7 @@ public class card extends Application {
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
                 Button button = new Button();
-                button.setPrefSize(100, 100); // 카드 크기 설정
+                button.setPrefSize(80, 80); // 카드 크기 설정
                 button.setStyle("-fx-background-color: transparent; -fx-border-color: black; -fx-border-radius: 10;");
                 button.setGraphic(new ImageView(new Image("file:javafx/src/imag/kkw/back_img.PNG"))); // 뒷면 이미지
                 buttons[i][j] = button;
@@ -62,7 +64,7 @@ public class card extends Application {
         root.setAlignment(Pos.CENTER); // 가운데 정렬
         root.getChildren().add(grid);
 
-        Scene scene = new Scene(root, 800, 800);
+        Scene scene = new Scene(root, 450, 450);
         stage.setScene(scene);
         stage.setTitle("카드 매칭 게임");
         stage.show();
@@ -129,7 +131,7 @@ public class card extends Application {
     }
 
     private void nextLevel(Stage stage) {
-        if (gridSize < 8) {
+        if (gridSize < 4) {
             gridSize += 2; // 크기 증가
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("레벨 업!");
@@ -141,9 +143,21 @@ public class card extends Application {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("게임 완료!");
             alert.setHeaderText(null);
-            alert.setContentText("모든 레벨을 완료했습니다! 축하합니다!");
-            alert.showAndWait();
-            System.exit(0);
+            alert.setContentText("게임 클리어 했으므로 질문권을 드립니다. 질문에 답해 주세요:\n" +
+                    "기억에 남는 순간들을 되새길 때, 너는 그 순간을 다른 사람들과 함께 공유하는 편이야, \n아니면 혼자 조용히 되새기는 걸 좋아해?");
+
+                ButtonType choiceE= new ButtonType("다른 사람들과 공유하는 걸 좋아해.");
+                ButtonType choiceI = new ButtonType("혼자 조용히 되새기는 게 좋아.");
+                alert.getButtonTypes().setAll(choiceE, choiceI);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                result.ifPresent(answer -> {
+                    if (answer == choiceE) {
+                        System.out.println("선택한 답변: 다른 사람들과 공유하는 걸 좋아해.");
+                    } else if (answer == choiceI) {
+                        System.out.println("선택한 답변: 혼자 조용히 되새기는 게 좋아.");
+                    }
+                });
         }
     }
 

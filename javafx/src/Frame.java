@@ -248,31 +248,30 @@ public class Frame extends Application {
 
         Button mywButton = new Button("알의 보호막을 깨라");
         mywButton.setFont(loadCustomFont("/font.ttf", 18));
-        mywButton.setOnAction(e -> {
-            Stage breakoutStage = new Stage();
-            new BreakoutGame().start(breakoutStage);
-        });
 
-        GridPane buttonPanel = new GridPane();
-        buttonPanel.setHgap(10);
-        buttonPanel.setVgap(10);
-        buttonPanel.add(gamingButton, 0, 0);
-        buttonPanel.add(cardButton, 1, 0);
-        buttonPanel.add(kysButton, 0, 1);
-        buttonPanel.add(mywButton, 1, 1);
+        // VBox에 버튼 추가
+        VBox buttonPanel = new VBox(20, gamingButton, cardButton, kysButton, mywButton);
         buttonPanel.setAlignment(Pos.CENTER);
 
-        nextScreen.setCenter(buttonPanel);
-        
+        // NEXT 버튼을 나중에 추가하기 위해 생성만 해둠
         Button nextButton = new Button("NEXT");
         nextButton.setFont(loadCustomFont("/font.ttf", 16));
         nextButton.setOnAction(e -> primaryStage.setScene(createFinalScene(primaryStage)));
+        nextButton.setVisible(false); // 처음에는 보이지 않도록 설정
+
+        // 네 번째 버튼 클릭 시 NEXT 버튼 표시
+        mywButton.setOnAction(e -> {
+            Stage breakoutStage = new Stage();
+            new BreakoutGame().start(breakoutStage);
+            nextButton.setVisible(true); // NEXT 버튼 표시
+        });
 
         VBox bottomPanel = new VBox(nextButton);
         bottomPanel.setAlignment(Pos.CENTER);
-        bottomPanel.setStyle("-fx-padding: 10 0 20 0;"); // 아래쪽 여백을 줄여 버튼 위치를 위로 올림
-        nextScreen.setBottom(bottomPanel);
+        bottomPanel.setStyle("-fx-padding: 10 0 20 0;");
 
+        nextScreen.setCenter(buttonPanel);
+        nextScreen.setBottom(bottomPanel);
 
         StackPane root = new StackPane(backgroundImage, nextScreen);
         return new Scene(root, 520, 620);

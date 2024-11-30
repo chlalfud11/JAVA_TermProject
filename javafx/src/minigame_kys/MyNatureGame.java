@@ -43,7 +43,7 @@ public class MyNatureGame extends Application {
         root = new Pane();
 
         // 배경 이미지 추가
-        Image bgImage = new Image(getClass().getResource("file:javafx/images/kys/burning_forest_meteor_background.png").toExternalForm());
+        Image bgImage = new Image(getClass().getResource("/javafx/images/kys/burning_forest_meteor_background.png").toExternalForm());
         ImageView background = new ImageView(bgImage);
         background.setFitWidth(400);
         background.setFitHeight(600);
@@ -97,7 +97,7 @@ public class MyNatureGame extends Application {
         root.getChildren().removeIf(node -> !(node instanceof ImageView)); // 배경 유지하고 초기화
 
         // 플레이어 이미지 설정
-        Image playerImg = new Image(getClass().getResource("file:javafx/images/kys/1st.png").toExternalForm());
+        Image playerImg = new Image(getClass().getResource("/javafx/images/burning_forest_meteor_background.png").toExternalForm());
         player = new ImageView(playerImg);
         player.setFitWidth(50);
         player.setFitHeight(50);
@@ -129,7 +129,7 @@ public class MyNatureGame extends Application {
 
     private void spawnObjects() {
         if (random.nextInt(40) == 0) {
-            ImageView meteor = new ImageView(new Image(getClass().getResource("file:javafx/images/kys/simple_item.png").toExternalForm()));
+            ImageView meteor = new ImageView(new Image(getClass().getResource("/javafx/images/kys/simple_item.png").toExternalForm()));
             meteor.setFitWidth(30);
             meteor.setFitHeight(30);
             meteor.setX(random.nextDouble() * 370);
@@ -149,7 +149,7 @@ public class MyNatureGame extends Application {
         }
 
         if (random.nextInt(150) == 0) {
-            ImageView clock = new ImageView(new Image(getClass().getResource("file:javafx/images/kys/clock_item.png").toExternalForm()));
+            ImageView clock = new ImageView(new Image(getClass().getResource("/javafx/images/kys/clock_item.png").toExternalForm()));
             clock.setFitWidth(30);
             clock.setFitHeight(30);
             clock.setX(random.nextDouble() * 370);
@@ -159,7 +159,7 @@ public class MyNatureGame extends Application {
         }
 
         if (random.nextInt(150) == 0) {
-            ImageView heal = new ImageView(new Image(getClass().getResource("file:javafx/images/kys/health_recovery_icon.png").toExternalForm()));
+            ImageView heal = new ImageView(new Image(getClass().getResource("/javafx/images/kys/health_recovery_icon.png").toExternalForm()));
             heal.setFitWidth(30);
             heal.setFitHeight(30);
             heal.setX(random.nextDouble() * 370);

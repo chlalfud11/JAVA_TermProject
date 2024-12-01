@@ -362,22 +362,22 @@ public class Frame extends Application {
         String resultImagePath;
         if (utils.character_result.e > utils.character_result.i) {
             if (utils.character_result.f > utils.character_result.t) {
-                resultImagePath = "file:javafx/images/e+f.jpg";
+                resultImagePath = "file:javafx/images/e+f.png";
             } else {
-                resultImagePath = "file:javafx/images/e+t.webp";
+                resultImagePath = "file:javafx/images/e+t.png";
             }
         } else {
             if (utils.character_result.f > utils.character_result.t) {
                 resultImagePath = "file:javafx/images/i+f.png";
             } else {
-                resultImagePath = "file:javafx/images/i+t.jpg";
+                resultImagePath = "file:javafx/images/i+t.png";
             }
         }
 
         // 결과 이미지 설정
         ImageView resultImage = new ImageView(new Image(resultImagePath));
-        resultImage.setFitWidth(300);
-        resultImage.setFitHeight(300);
+        resultImage.setFitWidth(200);
+        resultImage.setFitHeight(200);
 
         VBox content = new VBox(20, resultText, resultImage);
         content.setAlignment(Pos.CENTER);

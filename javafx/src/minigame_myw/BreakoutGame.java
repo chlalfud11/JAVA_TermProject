@@ -274,12 +274,13 @@ public class BreakoutGame extends Application {
             alert.setTitle("게임 클리어!");
             alert.setHeaderText(null);
             alert.setContentText("게임 클리어 했으므로 질문권을 드립니다. 질문에 답해 주세요:\n" +
-                    "기억에 남는 순간들을 되새길 때, 너는 그 순간을 다른 사람들과 함께 공유하는 편이야, \n" +
-                    "아니면 혼자 조용히 되새기는 걸 좋아해?");
+                    "사람들과 함께하는 모임에서, 너는\n"
+                    + "주로 이야기의 중심이 되는 것을 \n" +
+                    "좋아해, 아니면 조용히 듣는 편이야?");
 
             // 선택지 추가
-            ButtonType choiceE = new ButtonType("다른 사람들과 공유하는 걸 좋아해.");
-            ButtonType choiceI = new ButtonType("혼자 조용히 되새기는 게 좋아.");
+            ButtonType choiceE = new ButtonType("이야기의 중심이 되는 것을 좋아해.");
+            ButtonType choiceI = new ButtonType("조용히 듣는 편이야.");
             alert.getButtonTypes().setAll(choiceE, choiceI);
 
             // 선택지 결과 처리
@@ -287,11 +288,11 @@ public class BreakoutGame extends Application {
             result.ifPresent(answer -> {
                 if (answer == choiceE) {
                     utils.character_result.incrementE(50); // e +50
-                    System.out.println("선택한 답변: 다른 사람들과 공유하는 걸 좋아해.");
+                    System.out.println("선택한 답변: 이야기의 중심이 되는 것을 좋아해.");
                     System.out.println("현재 e 값: " + utils.character_result.e);
                 } else if (answer == choiceI) {
                     utils.character_result.incrementI(50); // i +50
-                    System.out.println("선택한 답변: 혼자 조용히 되새기는 게 좋아.");
+                    System.out.println("선택한 답변: 조용히 듣는 편이야.");
                     System.out.println("현재 i 값: " + utils.character_result.i);
                 }
                 alert.close(); // 창 닫기

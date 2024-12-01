@@ -186,7 +186,7 @@ public class card extends Application {
             alert.setHeaderText(null);
             alert.setContentText("게임 클리어\n" + 
                                  "너 덕분에 내가 잃어버린 기억을 다시 되찾았어.\n" +
-                                 "이제 마지막 질문을 할게\n" + 
+                                 "이제 다음 질문을 할게\n" + 
                                  "기억에 남는 순간들을 되새길 때, 너는 그 순간을 다른 사람들과 함께 공유하는 편이야, \n" +
                                  "아니면 혼자 조용히 되새기는 걸 좋아해?");
 

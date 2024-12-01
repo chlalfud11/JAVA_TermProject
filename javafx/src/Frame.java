@@ -336,7 +336,42 @@ public class Frame extends Application {
         return new Scene(root, 520, 620);
     }
 
-    // 결과 화면 생성
+    private Scene createFinalFarewellScene(Stage primaryStage, ImageView resultImage) {
+        BorderPane farewellScreen = new BorderPane();
+        ImageView backgroundImage = new ImageView(new Image("file:javafx/images/space_background.png"));
+        backgroundImage.setFitWidth(520);
+        backgroundImage.setFitHeight(620);
+
+        TextArea farewellText = new TextArea();
+        farewellText.setFont(loadCustomFont("/font.ttf", 18));
+        farewellText.setEditable(false);
+        farewellText.setWrapText(true);
+
+        // 텍스트 상자 스타일 (우주 테마 색상 적용)
+        farewellText.setStyle("-fx-control-inner-background: rgba(25, 25, 112, 0.9); " +
+                              "-fx-border-color: #4682b4; " +
+                              "-fx-border-radius: 10; " +
+                              "-fx-padding: 10; " +
+                              "-fx-text-fill: #ffffff;");
+
+        // 타자기 효과로 텍스트 출력
+        String farewellMessage = "난 사실 지구가 아니라 다른 별에서 왔어. 나는 이제 내가 태어난 곳으로 돌아가려고 해! "
+                               + "너를 만나서 난 정말 행복했어. 다음에 기회가 된다면 또 만나자!";
+        applyTypewriterEffect(farewellText, farewellMessage);
+
+        // NEXT 버튼 추가
+        Button nextButton = new Button("FINISH");
+        nextButton.setFont(loadCustomFont("/font.ttf", 16));
+        nextButton.setOnAction(e -> primaryStage.close()); // 프로그램 종료
+
+        VBox content = new VBox(20, farewellText, resultImage, nextButton);
+        content.setAlignment(Pos.CENTER);
+        farewellScreen.setCenter(content);
+
+        StackPane root = new StackPane(backgroundImage, farewellScreen);
+        return new Scene(root, 520, 620);
+    }
+
     private Scene createResultScene(Stage primaryStage) {
         BorderPane resultScreen = new BorderPane();
         ImageView backgroundImage = new ImageView(new Image("file:javafx/images/storybackground.jpeg"));
@@ -379,13 +414,18 @@ public class Frame extends Application {
         resultImage.setFitWidth(200);
         resultImage.setFitHeight(200);
 
-        VBox content = new VBox(20, resultText, resultImage);
+        Button nextButton = new Button("NEXT");
+        nextButton.setFont(loadCustomFont("/font.ttf", 16));
+        nextButton.setOnAction(e -> primaryStage.setScene(createFinalFarewellScene(primaryStage, resultImage))); // 새로운 화면으로 전환
+
+        VBox content = new VBox(20, resultText, resultImage, nextButton);
         content.setAlignment(Pos.CENTER);
         resultScreen.setCenter(content);
 
         StackPane root = new StackPane(backgroundImage, resultScreen);
         return new Scene(root, 520, 620);
     }
+
 
     private Font loadCustomFont(String fontPath, float size) {
         try {

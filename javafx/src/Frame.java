@@ -19,6 +19,8 @@ import minigame_kkw.card;
 import minigame_kys.MyNatureGame;
 import minigame_myw.BreakoutGame;
 
+import utils.character_result;
+
 public class Frame extends Application {
 
     private String[] storyLines = {
@@ -29,12 +31,12 @@ public class Frame extends Application {
     private TextArea storyText;
 
     private String[] MBTILines = {
-            "너는 성장하는 데에 있어 혼자만의 시간이 중요하다고 생각해? 아니면 다른 사람들과 함께하는 것이 중요하다고 생각하니?",
-            "너는 갈등 상황에서 차분하게 이 상황을 분석하려고 해? 아니면 상대방의 감정을 먼저 생각하려고 하니?"
+            "너는 갈등 상황에서 차분하게 이 상황을 분석하려고 해? 아니면 상대방의 감정을 먼저 생각하려고 하니?",
+            "너는 성장하는 데에 있어 혼자만의 시간이 중요하다고 생각해? 아니면 다른 사람들과 함께하는 것이 중요하다고 생각하니?"
     };
     private String[][] MBTIOptions = {
-            {"혼자만의 시간이 중요해", "사람들과 함께하는 게 중요해"},
-            {"차분하게 분석하려고 해", "상대방의 감정을 먼저 생각해"}
+    		{"차분하게 분석하려고 해", "상대방의 감정을 먼저 생각해"},
+            {"혼자만의 시간이 중요해", "사람들과 함께하는 게 중요해"}
     };
     private int currentMBTIIndex = 0;
     
@@ -149,13 +151,29 @@ public class Frame extends Application {
 
         applyTypewriterEffect(MBTIText, MBTILines[currentMBTIIndex]);
 
+        // 첫 번째 질문
         Button option1Button = new Button(MBTIOptions[currentMBTIIndex][0]);
         option1Button.setFont(loadCustomFont("/font.ttf", 16));
         Button option2Button = new Button(MBTIOptions[currentMBTIIndex][1]);
         option2Button.setFont(loadCustomFont("/font.ttf", 16));
 
-        option1Button.setOnAction(e -> handleMBTIOption(primaryStage, MBTIText, option1Button, option2Button));
-        option2Button.setOnAction(e -> handleMBTIOption(primaryStage, MBTIText, option1Button, option2Button));
+        option1Button.setOnAction(e -> {
+            if (currentMBTIIndex == 0) {
+                utils.character_result.incrementT(50); // 첫 번째 질문에서 첫 번째 버튼 선택 시 t +50
+            } else if (currentMBTIIndex == 1) {
+                utils.character_result.incrementI(50); // 두 번째 질문에서 첫 번째 버튼 선택 시 i +50
+            }
+            handleMBTIOption(primaryStage, MBTIText, option1Button, option2Button);
+        });
+
+        option2Button.setOnAction(e -> {
+            if (currentMBTIIndex == 0) {
+                utils.character_result.incrementF(50); // 첫 번째 질문에서 두 번째 버튼 선택 시 f +50
+            } else if (currentMBTIIndex == 1) {
+                utils.character_result.incrementE(50); // 두 번째 질문에서 두 번째 버튼 선택 시 e +50
+            }
+            handleMBTIOption(primaryStage, MBTIText, option1Button, option2Button);
+        });
 
         HBox options = new HBox(20, option1Button, option2Button);
         options.setAlignment(Pos.CENTER);
@@ -168,6 +186,7 @@ public class Frame extends Application {
         StackPane root = new StackPane(backgroundImage, MBTIScreen);
         return new Scene(root, 520, 620);
     }
+
 
     private void handleMBTIOption(Stage primaryStage, TextArea MBTIText, Button option1Button, Button option2Button) {
         currentMBTIIndex++;
@@ -304,7 +323,12 @@ public class Frame extends Application {
         finalImage.setFitWidth(300);
         finalImage.setFitHeight(200);
 
-        VBox content = new VBox(20, finalText, finalImage);
+        // NEXT 버튼 추가
+        Button nextButton = new Button("NEXT");
+        nextButton.setFont(loadCustomFont("/font.ttf", 16));
+        nextButton.setOnAction(e -> primaryStage.setScene(createResultScene(primaryStage))); // 새로운 화면으로 전환
+
+        VBox content = new VBox(20, finalText, finalImage, nextButton);
         content.setAlignment(Pos.CENTER);
         finalScreen.setCenter(content);
 
@@ -312,6 +336,56 @@ public class Frame extends Application {
         return new Scene(root, 520, 620);
     }
 
+    // 결과 화면 생성
+    private Scene createResultScene(Stage primaryStage) {
+        BorderPane resultScreen = new BorderPane();
+        ImageView backgroundImage = new ImageView(new Image("file:javafx/images/storybackground.jpeg"));
+        backgroundImage.setFitWidth(520);
+        backgroundImage.setFitHeight(620);
+
+        TextArea resultText = new TextArea();
+        resultText.setFont(loadCustomFont("/font.ttf", 18));
+        resultText.setEditable(false);
+        resultText.setWrapText(true);
+
+        // 텍스트 상자 스타일
+        resultText.setStyle("-fx-control-inner-background: rgba(240, 248, 255, 0.9); " +
+                            "-fx-border-color: #5f9ea0; " +
+                            "-fx-border-radius: 10; " +
+                            "-fx-padding: 10; " +
+                            "-fx-text-fill: #333333;");
+
+        // 타자기 효과로 텍스트 출력
+        applyTypewriterEffect(resultText, "우와! 이게 내 모습이야!! 이건 다 너 덕분이야. 너 덕분에 깨어날 수 있었어!! 고마워!!");
+
+        // 조건에 따라 이미지 결정
+        String resultImagePath;
+        if (utils.character_result.e > utils.character_result.i) {
+            if (utils.character_result.f > utils.character_result.t) {
+                resultImagePath = "file:javafx/images/e+f.jpg";
+            } else {
+                resultImagePath = "file:javafx/images/e+t.webp";
+            }
+        } else {
+            if (utils.character_result.f > utils.character_result.t) {
+                resultImagePath = "file:javafx/images/i+f.png";
+            } else {
+                resultImagePath = "file:javafx/images/i+t.jpg";
+            }
+        }
+
+        // 결과 이미지 설정
+        ImageView resultImage = new ImageView(new Image(resultImagePath));
+        resultImage.setFitWidth(300);
+        resultImage.setFitHeight(300);
+
+        VBox content = new VBox(20, resultText, resultImage);
+        content.setAlignment(Pos.CENTER);
+        resultScreen.setCenter(content);
+
+        StackPane root = new StackPane(backgroundImage, resultScreen);
+        return new Scene(root, 520, 620);
+    }
 
     private Font loadCustomFont(String fontPath, float size) {
         try {

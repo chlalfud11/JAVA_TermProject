@@ -15,6 +15,8 @@ import javafx.geometry.Pos;
 
 import java.util.Random;
 
+import utils.character_result;
+
 public class Gaming extends Application {
 
     private static final int GRID_SIZE = 8; // 그리드 크기
@@ -235,8 +237,17 @@ public class Gaming extends Application {
         Button aloneButton = new Button("다음엔 꼭 붙을 거야!");
         Button togetherButton = new Button("몇점인데?");
 
-        aloneButton.setOnAction(e -> showThanksScreen(mbtiStage));
-        togetherButton.setOnAction(e -> showThanksScreen(mbtiStage));
+        // 첫 번째 버튼 클릭 시 f 변수에 +50
+        aloneButton.setOnAction(e -> {
+            utils.character_result.incrementF(50); // f +50
+            showThanksScreen(mbtiStage);
+        });
+
+        // 두 번째 버튼 클릭 시 t 변수에 +50
+        togetherButton.setOnAction(e -> {
+            utils.character_result.incrementT(50); // t +50
+            showThanksScreen(mbtiStage);
+        });
 
         mbtiLayout.getChildren().addAll(question, aloneButton, togetherButton);
 

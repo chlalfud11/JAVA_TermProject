@@ -1,6 +1,7 @@
 package minigame_kkw;
 
 import javafx.animation.PauseTransition;
+
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import utils.character_result;
 
 public class card extends Application {
     private int gridSize = 2; // 시작 크기 2x2
@@ -181,8 +184,11 @@ public class card extends Application {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("게임 완료!");
             alert.setHeaderText(null);
-            alert.setContentText("게임 클리어\n" + "너 덕분에 내가 잃어버린 기억을 다시 되찾았어.\n 이제 마지막 질문을 할게\n" + 
-                    "기억에 남는 순간들을 되새길 때, 너는 그 순간을 다른 사람들과 함께 공유하는 편이야, \n아니면 혼자 조용히 되새기는 걸 좋아해?");
+            alert.setContentText("게임 클리어\n" + 
+                                 "너 덕분에 내가 잃어버린 기억을 다시 되찾았어.\n" +
+                                 "이제 마지막 질문을 할게\n" + 
+                                 "기억에 남는 순간들을 되새길 때, 너는 그 순간을 다른 사람들과 함께 공유하는 편이야, \n" +
+                                 "아니면 혼자 조용히 되새기는 걸 좋아해?");
 
             ButtonType choiceE = new ButtonType("다른 사람들과 공유하는 걸 좋아해.");
             ButtonType choiceI = new ButtonType("혼자 조용히 되새기는 게 좋아.");
@@ -191,13 +197,16 @@ public class card extends Application {
             Optional<ButtonType> result = alert.showAndWait();
             result.ifPresent(answer -> {
                 if (answer == choiceE) {
+                    utils.character_result.incrementE(50); // e +50
                     System.out.println("선택한 답변: 다른 사람들과 공유하는 걸 좋아해.");
                 } else if (answer == choiceI) {
+                    utils.character_result.incrementI(50); // i +50
                     System.out.println("선택한 답변: 혼자 조용히 되새기는 게 좋아.");
                 }
             });
         }
     }
+
 
     public static void main(String[] args) {
         launch(args);

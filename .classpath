@@ -6,6 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="javafx/src"/>
+	<classpathentry excluding="kys/" kind="src" path="javafx/images"/>
 	<classpathentry kind="lib" path="C:/openjfx-17.0.13_windows-x64_bin-sdk/javafx-sdk-17.0.13/lib/javafx.base.jar">
 		<attributes>
 			<attribute name="module" value="true"/>

@@ -20,6 +20,8 @@ import java.util.Optional;
 
 import java.util.Random;
 
+import utils.character_result;
+
 public class BreakoutGame extends Application {
     private Ball ball;
     private Paddle paddle;
@@ -265,7 +267,6 @@ public class BreakoutGame extends Application {
             showGameOver(); // 게임 종료 창 표시
         }
     }
-
     
     private void showGameClear() {
         Platform.runLater(() -> {
@@ -285,12 +286,15 @@ public class BreakoutGame extends Application {
             Optional<ButtonType> result = alert.showAndWait();
             result.ifPresent(answer -> {
                 if (answer == choiceE) {
+                    utils.character_result.incrementE(50); // e +50
                     System.out.println("선택한 답변: 다른 사람들과 공유하는 걸 좋아해.");
+                    System.out.println("현재 e 값: " + utils.character_result.e);
                 } else if (answer == choiceI) {
+                    utils.character_result.incrementI(50); // i +50
                     System.out.println("선택한 답변: 혼자 조용히 되새기는 게 좋아.");
+                    System.out.println("현재 i 값: " + utils.character_result.i);
                 }
-                //창 닫기
-                alert.close();
+                alert.close(); // 창 닫기
             });
         });
     }
